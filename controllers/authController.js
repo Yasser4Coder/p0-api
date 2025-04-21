@@ -55,7 +55,7 @@ const login = async (req, res) => {
     res.cookie("token", accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
     });
 
     res.json({
