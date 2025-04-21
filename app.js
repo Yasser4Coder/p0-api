@@ -28,7 +28,11 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://your-production-frontend.com", "*"],
+    origin: [
+      "http://localhost:5173",
+      "https://your-production-frontend.com",
+      "https://www.project-0.elec.h-s.cloud",
+    ],
     credentials: true, //  Allow cookies to be sent
   })
 );
