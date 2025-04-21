@@ -32,6 +32,7 @@ app.use(
       "http://localhost:5173",
       "https://your-production-frontend.com",
       "https://www.project-0.elec.h-s.cloud",
+      "https://p0-v2-frontend.onrender.com",
     ],
     credentials: true, //  Allow cookies to be sent
   })
