@@ -34,6 +34,7 @@ app.use(
       "https://your-production-frontend.com",
       "https://www.project-0.elec.h-s.cloud",
       "https://p0-v2-frontend.onrender.com",
+      "https://89ad-105-235-136-158.ngrok-free.app"
     ],
     credentials: true, //  Allow cookies to be sent
   })
