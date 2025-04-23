@@ -29,7 +29,7 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://elec-frontend.vercel.app", "https://p0-v2-frontend.onrender.com"],
+    origin: ["http://localhost:5173", "https://elec-frontend.vercel.app", "https://p0-v2-frontend.onrender.com", "https://89ad-105-235-136-158.ngrok-free.app"],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
