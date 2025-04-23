@@ -16,7 +16,6 @@ const challengeSchema = new mongoose.Schema(
     },
     attachmentFile: {
       type: String,
-      required: true,
     },
     hints: {
       type: [String],
@@ -29,12 +28,15 @@ const challengeSchema = new mongoose.Schema(
     },
     wave: {
       type: Number,
-      required: true
+      required: true,
     },
     status: {
       type: String,
       enum: ["active", "inactive"],
       default: "inactive",
+    },
+    difficulty: {
+      type: String,
     },
   },
   { timestamps: true }

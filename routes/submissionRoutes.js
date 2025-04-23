@@ -15,14 +15,12 @@ const authenticateUser = require("../middlewares/authMiddleware");
 const authorizeRoles = require("../middlewares/authorizeRoles");
 
 router.get("/", authenticateUser, authorizeRoles("admin"), getAllSubmissions);
-
 router.get(
   "/team/:teamId",
   authenticateUser,
   authorizeRoles("admin", "participant"),
   getSubmissionByTeamId
 );
-
 router.post(
   "/",
   authenticateUser,
@@ -37,14 +35,12 @@ router.get(
   authorizeRoles("admin"),
   getSubmissionById
 );
-
 router.get(
   "/team/:teamId/scores",
   authenticateUser,
   authorizeRoles("admin", "participant"),
   getSubmissionScoresByTeam
 );
-
 router.get(
   "/team/:teamId/scores/category",
   authenticateUser,

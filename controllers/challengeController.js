@@ -4,7 +4,7 @@ const cloudinary = require("../config/cloudinary");
 
 const getAllChallenges = async (req, res) => {
   try {
-    const challenges = await Challenge.find()
+    const challenges = await Challenge.find();
     res.json(challenges);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -13,23 +13,34 @@ const getAllChallenges = async (req, res) => {
 
 const createChallenge = async (req, res) => {
   try {
-    if (!req.body.title || !req.body.description || !req.body.points || !req.body.category || !req.body.wave) {
+    if (
+      !req.body.title ||
+      !req.body.description ||
+      !req.body.points ||
+      !req.body.category ||
+      !req.body.wave
+    ) {
       return res.status(400).json({ message: "Some information are required" });
     }
+    let downloadUrl = null;
 
-    if (!req.file) {
-      return res.status(400).json({ message: "File is required" });
+    if (req.file?.path) {
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "attachments",
+          resource_type: "auto",
+          use_filename: true,
+          unique_filename: false,
+        });
+
+        // Force download by modifying URL with `fl_attachment`
+        const urlParts = result.secure_url.split("/upload/");
+        downloadUrl = `${urlParts[0]}/upload/fl_attachment/${urlParts[1]}`;
+      } catch (error) {
+        console.error("Cloudinary upload failed:", error);
+        return res.status(500).json({ error: "File upload failed." });
+      }
     }
-
-    // Upload file to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "attachments",
-      resource_type: "auto",
-      use_filename: true,
-      unique_filename: false,
-    });
-
-    const downloadUrl = result.secure_url.replace("/upload/", "/upload/fl_attachment/");
 
     const { title, description, points, hints, category, wave } = req.body;
     const challenge = new Challenge({
@@ -45,7 +56,9 @@ const createChallenge = async (req, res) => {
     await challenge.save();
     res.status(201).json(challenge);
   } catch (error) {
-    res.status(400).json({ message: "Error creating challenge", error: error.message });
+    res
+      .status(400)
+      .json({ message: "Error creating challenge", error: error.message });
   }
 };
 
@@ -65,18 +78,25 @@ const getChallengesByWave = async (req, res) => {
     const team = req.user.teamId;
 
     const status = "active";
-    const challenges = await Challenge.find({ wave: req.params.wave, status }).lean();
+    const challenges = await Challenge.find({
+      wave: req.params.wave,
+      status,
+    }).lean();
 
     if (!challenges.length) {
-      return res.status(404).json({ message: "No challenges found for this wave" });
+      return res
+        .status(404)
+        .json({ message: "No challenges found for this wave" });
     }
 
     // For each challenge, check if this team has solved it
     for (let challenge of challenges) {
       const submission = await Submission.findOne({
         challengeId: challenge._id,
-        teamId: team
-      }).select('isSolved').lean();
+        teamId: team,
+      })
+        .select("isSolved")
+        .lean();
 
       // If submission exists, use its isSolved value; otherwise, default to false
       challenge.isSolved = submission ? submission.isSolved : false;
@@ -113,4 +133,10 @@ const updateChallengeStatus = async (req, res) => {
   }
 };
 
-module.exports = { getAllChallenges, createChallenge, getChallengeById, getChallengesByWave, updateChallengeStatus };
+module.exports = {
+  getAllChallenges,
+  createChallenge,
+  getChallengeById,
+  getChallengesByWave,
+  updateChallengeStatus,
+};
