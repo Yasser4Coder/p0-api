@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = [".csv", ".zip", ".pdf"];
+  const allowedTypes = [".csv", ".zip", ".pdf", ".jpg", ".png"];
   const ext = path.extname(file.originalname).toLowerCase();
   if (!allowedTypes.includes(ext)) {
     return cb(new Error("Only CSV, ZIP, and PDF files are allowed"), false);
