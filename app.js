@@ -27,14 +27,28 @@ const setupSocket = require("./config/socket");
 const app = express();
 const server = http.createServer(app);
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "https://elec-frontend.vercel.app", "https://p0-v2-frontend.onrender.com", "https://89ad-105-235-136-158.ngrok-free.app"],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  })
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://elec-frontend.vercel.app",
+  "https://p0-v2-frontend.onrender.com",
+  "https://89ad-105-235-136-158.ngrok-free.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors());
+
 app.use(express.json({ limit: "200mb" })); // default is ~100kb
 app.use(morgan("dev"));
 app.use(cookieParser());
