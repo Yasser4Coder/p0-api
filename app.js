@@ -8,6 +8,7 @@ const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/errorMiddleware");
 
 require("dotenv").config();
+// test//
 
 const userRoutes = require("./routes/userRoutes");
 const teamRoutes = require("./routes/teamRoutes");
